@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ministry Roadmap</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --warm-cream: #FAF7F2;
+            --deep-olive: #4A5D3E;
+            --soft-terracotta: #C17456;
+            --warm-gold: #D4A574;
+            --slate-blue: #5B6B7C;
+            --light-sage: #E8EBE4;
+            --accent-burgundy: #8B4754;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            background: linear-gradient(135deg, var(--warm-cream) 0%, #FFFEF9 100%);
+            color: var(--slate-blue);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Password Screen Styles */
+        .password-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .password-container {
+            background: white;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .password-container h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2.5rem;
+            color: var(--deep-olive);
+            margin-bottom: 0.5rem;
+        }
+
+        .password-container p {
+            color: var(--slate-blue);
+            opacity: 0.8;
+            margin-bottom: 2rem;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--light-sage);
+            border-radius: 8px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: var(--warm-gold);
+        }
+
+        .password-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--soft-terracotta), var(--accent-burgundy));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(193, 116, 86, 0.2);
+        }
+
+        .password-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(193, 116, 86, 0.3);
+        }
+
+        .error-message {
+            color: var(--accent-burgundy);
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* Main App Styles */
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: none;
+        }
+
+        .app-container.unlocked {
+            display: block;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--warm-gold), transparent);
+        }
+
+        h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--deep-olive);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--slate-blue);
+            opacity: 0.8;
+            font-weight: 300;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-section {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: var(--deep-olive);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.6rem 1.2rem;
+            border: 2px solid var(--light-sage);
+            background: white;
+            color: var(--slate-blue);
+            border-radius: 24px;
+            cursor: pointer;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 400;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--warm-gold);
+            transform: translateY(-2px);
+        }
+
+        .filter-btn.active {
+            background: var(--deep-olive);
+            color: white;
+            border-color: var(--deep-olive);
+        }
+
+        .person-filter {
+            margin-top: 1rem;
+        }
+
+        .person-select {
+            width: 100%;
+            max-width: 300px;
+            padding: 0.8rem;
+            border: 2px solid var(--light-sage);
+            border-radius: 8px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        .person-select:focus {
+            outline: none;
+            border-color: var(--warm-gold);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .add-btn, .hide-completed-btn {
+            padding: 0.8rem 2rem;
+            background: linear-gradient(135deg, var(--soft-terracotta), var(--accent-burgundy));
+            color: white;
+            border: none;
+            border-radius: 28px;
+            cursor: pointer;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(193, 116, 86, 0.2);
+            white-space: nowrap;
+        }
+
+        .hide-completed-btn {
+            background: linear-gradient(135deg, var(--slate-blue), var(--deep-olive));
+        }
+
+        .add-btn:hover, .hide-completed-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(193, 116, 86, 0.3);
+        }
+
+        .timeline-container {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, transparent, var(--warm-gold), transparent);
+            transform: translateX(-50%);
+        }
+
+        .timeline-items {
+            position: relative;
+            z-index: 1;
+        }
+
+        .timeline-item {
+            display: flex;
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .timeline-item:nth-child(odd) {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-content {
+            width: calc(50% - 2rem);
+            padding: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-right: 4rem;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-left: 4rem;
+        }
+
+        .timeline-content:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .timeline-marker {
+            position: absolute;
+            left: 50%;
+            top: 2rem;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            border: 4px solid var(--deep-olive);
+            box-shadow: 0 0 0 4px var(--light-sage);
+            z-index: 2;
+        }
+
+        .ministry-tag {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            margin-right: 0.3rem;
+            background: rgba(91, 107, 124, 0.15);
+            color: var(--slate-blue);
+        }
+
+        .ministry-tag.worship {
+            background: rgba(193, 116, 86, 0.15);
+            color: var(--soft-terracotta);
+        }
+
+        .ministry-tag.gena {
+            background: rgba(212, 165, 116, 0.15);
+            color: var(--warm-gold);
+        }
+
+        .ministry-tag.evangelism {
+            background: rgba(74, 93, 62, 0.15);
+            color: var(--deep-olive);
+        }
+
+        .ministry-tag.children {
+            background: rgba(139, 71, 84, 0.15);
+            color: var(--accent-burgundy);
+        }
+
+        .tagged-people {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 0.8rem;
+        }
+
+        .person-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.3rem 0.8rem;
+            background: rgba(212, 165, 116, 0.2);
+            color: var(--warm-gold);
+            border-radius: 16px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .person-tag::before {
+            content: '@';
+            margin-right: 0.2rem;
+        }
+
+        .item-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--deep-olive);
+            margin-bottom: 0.5rem;
+        }
+
+        .item-date {
+            color: var(--slate-blue);
+            opacity: 0.7;
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .item-description {
+            color: var(--slate-blue);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .item-status {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .item-status.planning {
+            background: rgba(91, 107, 124, 0.1);
+            color: var(--slate-blue);
+        }
+
+        .item-status.in-progress {
+            background: rgba(212, 165, 116, 0.15);
+            color: var(--warm-gold);
+        }
+
+        .item-status.completed {
+            background: rgba(74, 93, 62, 0.15);
+            color: var(--deep-olive);
+        }
+
+        /* Sub-initiatives Styles */
+        .sub-initiatives {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 2px dashed var(--light-sage);
+        }
+
+        .sub-initiatives-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .sub-initiatives-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--deep-olive);
+        }
+
+        .add-sub-btn {
+            padding: 0.3rem 0.8rem;
+            background: var(--light-sage);
+            color: var(--deep-olive);
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .add-sub-btn:hover {
+            background: var(--deep-olive);
+            color: white;
+        }
+
+        .sub-initiative-item {
+            background: var(--light-sage);
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .sub-initiative-content {
+            flex: 1;
+        }
+
+        .sub-initiative-title {
+            font-weight: 600;
+            color: var(--deep-olive);
+            margin-bottom: 0.3rem;
+        }
+
+        .sub-initiative-desc {
+            font-size: 0.85rem;
+            color: var(--slate-blue);
+            opacity: 0.8;
+        }
+
+        .sub-initiative-actions {
+            display: flex;
+            gap: 0.3rem;
+        }
+
+        .sub-action-btn {
+            padding: 0.2rem 0.5rem;
+            border: none;
+            background: white;
+            color: var(--slate-blue);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.2s ease;
+        }
+
+        .sub-action-btn:hover {
+            background: var(--deep-olive);
+            color: white;
+        }
+
+        .sub-action-btn.delete:hover {
+            background: var(--accent-burgundy);
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .action-btn {
+            padding: 0.4rem 1rem;
+            border: 1px solid var(--light-sage);
+            background: white;
+            color: var(--slate-blue);
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background: var(--light-sage);
+        }
+
+        .action-btn.delete {
+            color: var(--accent-burgundy);
+            border-color: rgba(139, 71, 84, 0.3);
+        }
+
+        .action-btn.delete:hover {
+            background: rgba(139, 71, 84, 0.1);
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal.hidden {
+            display: none;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--deep-olive);
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--deep-olive);
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--light-sage);
+            border-radius: 8px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--warm-gold);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .tag-input-container {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .tag-input-container input {
+            flex: 1;
+        }
+
+        .tag-input-container button {
+            padding: 0.8rem 1.2rem;
+            background: var(--deep-olive);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .tag-input-container button:hover {
+            background: #3d4d32;
+        }
+
+        .tagged-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.8rem;
+        }
+
+        .tagged-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 0.8rem;
+            background: var(--light-sage);
+            border-radius: 16px;
+            font-size: 0.9rem;
+        }
+
+        .tagged-item button {
+            background: none;
+            border: none;
+            color: var(--accent-burgundy);
+            cursor: pointer;
+            font-weight: 700;
+            padding: 0;
+            font-size: 1.1rem;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.8rem 1.8rem;
+            border: none;
+            border-radius: 24px;
+            cursor: pointer;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--soft-terracotta), var(--accent-burgundy));
+            color: white;
+            box-shadow: 0 4px 12px rgba(193, 116, 86, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(193, 116, 86, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--light-sage);
+            color: var(--slate-blue);
+        }
+
+        .btn-secondary:hover {
+            background: #d9ddd4;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--slate-blue);
+            opacity: 0.6;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .timeline-line {
+                left: 2rem;
+            }
+
+            .timeline-item {
+                flex-direction: row !important;
+            }
+
+            .timeline-content {
+                width: calc(100% - 4rem);
+                margin-left: 4rem !important;
+                margin-right: 0 !important;
+            }
+
+            .timeline-marker {
+                left: 2rem;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-section {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Password Screen -->
+    <div class="password-screen" id="passwordScreen">
+        <div class="password-container">
+            <h1>🔒 Ministry Roadmap</h1>
+            <p>Please enter the password to access</p>
+            <form id="passwordForm">
+                <input 
+                    type="password" 
+                    class="password-input" 
+                    id="passwordInput" 
+                    placeholder="Enter password"
+                    autocomplete="off"
+                >
+                <button type="submit" class="password-btn">Unlock</button>
+                <p class="error-message" id="errorMessage">Incorrect password. Please try again.</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App (Hidden until password is correct) -->
+    <div class="app-container" id="appContainer">
+        <header>
+            <h1>Ministry Roadmap</h1>
+            <p class="subtitle">Plan, Track, and Achieve Together</p>
+        </header>
+
+        <div class="controls">
+            <div class="filter-section">
+                <span class="filter-label">Filter by Ministry:</span>
+                <div class="filter-group" id="ministryFilters"></div>
+                
+                <div class="person-filter hidden" id="personFilterContainer">
+                    <span class="filter-label">Filter by Person:</span>
+                    <select class="person-select" id="personFilter">
+                        <option value="All">All People</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button class="hide-completed-btn" id="hideCompletedBtn">Hide Completed</button>
+                <button class="add-btn" id="addBtn">+ Add Initiative</button>
+            </div>
+        </div>
+
+        <div class="timeline-container">
+            <div class="timeline-line"></div>
+            <div class="timeline-items" id="timelineItems">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📋</div>
+                    <p>No initiatives yet. Click "Add Initiative" to get started!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Initiative Modal -->
+    <div class="modal hidden" id="modal">
+        <div class="modal-content">
+            <h2 class="modal-title" id="modalTitle">New Initiative</h2>
+            <form id="itemForm">
+                <div class="form-group">
+                    <label>Title *</label>
+                    <input type="text" id="titleInput" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Ministry *</label>
+                    <select id="ministryInput"></select>
+                </div>
+
+                <div class="form-group">
+                    <label>Target Date *</label>
+                    <input type="date" id="dateInput" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Description *</label>
+                    <textarea id="descriptionInput" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Status *</label>
+                    <select id="statusInput">
+                        <option value="Planning">Planning</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Tag People</label>
+                    <div class="tag-input-container">
+                        <input type="text" id="personInput" placeholder="Enter a name...">
+                        <button type="button" id="addPersonBtn">Add</button>
+                    </div>
+                    <div class="tagged-list" id="taggedList"></div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sub-Initiative Modal -->
+    <div class="modal hidden" id="subModal">
+        <div class="modal-content">
+            <h2 class="modal-title" id="subModalTitle">New Sub-Initiative</h2>
+            <form id="subItemForm">
+                <div class="form-group">
+                    <label>Title *</label>
+                    <input type="text" id="subTitleInput" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="subDescriptionInput"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="subCancelBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="subSubmitBtn">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+    <script>
+        // ============================================
+        // 🔐 PASSWORD CONFIGURATION
+        // ============================================
+        // TO CHANGE PASSWORD: Simply replace 'ministry2024' below with your new password
+        const CORRECT_PASSWORD = 'ministry2024';
+        // ============================================
+
+        // ============================================
+        // 🔥 FIREBASE CONFIGURATION
+        // ============================================
+        // REPLACE THESE VALUES WITH YOUR FIREBASE PROJECT CREDENTIALS
+        // Instructions below show you how to get these values
+        const firebaseConfig = {
+            apiKey: "AIzaSyDUtknK3RzTsdXKXlI_PYwxcw3Sp7CkMfw",
+            authDomain: "ministry-roadmap.firebaseapp.com",
+            databaseURL: "https://ministry-roadmap-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "ministry-roadmap",
+            storageBucket: "ministry-roadmap.firebasestorage.app",
+            messagingSenderId: "730171378271",
+            appId: "1:730171378271:web:7af97c8ef79455866569ea"
+        };
+        // ============================================
+
+        const MINISTRIES = [
+            'Worship', 'Gen A', 'Evangelism', 'Children', 'Admin',
+            'Amplify', 'Prayer', 'Welcome', 'Missions', 'Finance',
+            'Family', 'Community', 'Facilities', 'Service Deacon', 'Seniors'
+        ];
+
+        let db = null;
+        let items = [];
+        let filteredMinistry = 'All';
+        let filteredPerson = 'All';
+        let hideCompleted = false;
+        let editingId = null;
+        let taggedPeople = [];
+        let currentParentId = null;
+        let editingSubId = null;
+
+        // Check if Firebase is configured
+        const isFirebaseConfigured = firebaseConfig.apiKey !== "YOUR_API_KEY_HERE";
+
+        // Initialize Firebase if configured
+        if (isFirebaseConfigured) {
+            try {
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.database();
+                console.log('✅ Firebase connected successfully');
+            } catch (error) {
+                console.error('❌ Firebase initialization error:', error);
+            }
+        } else {
+            console.warn('⚠️ Firebase not configured. Using localStorage. See instructions to set up database.');
+        }
+
+        // Password handling
+        document.addEventListener('DOMContentLoaded', function() {
+            if (sessionStorage.getItem('roadmapUnlocked') === 'true') {
+                unlockApp();
+            }
+
+            document.getElementById('passwordForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const input = document.getElementById('passwordInput');
+                const errorMsg = document.getElementById('errorMessage');
+                
+                if (input.value === CORRECT_PASSWORD) {
+                    sessionStorage.setItem('roadmapUnlocked', 'true');
+                    unlockApp();
+                } else {
+                    errorMsg.classList.add('show');
+                    input.value = '';
+                    input.focus();
+                    setTimeout(() => {
+                        errorMsg.classList.remove('show');
+                    }, 3000);
+                }
+            });
+        });
+
+        function unlockApp() {
+            document.getElementById('passwordScreen').style.display = 'none';
+            document.getElementById('appContainer').classList.add('unlocked');
+            initializeApp();
+        }
+
+        function initializeApp() {
+            loadItems();
+            initializeMinistryFilters();
+            initializeMinistrySelect();
+            
+            document.getElementById('addBtn').addEventListener('click', () => openModal());
+            document.getElementById('cancelBtn').addEventListener('click', closeModal);
+            document.getElementById('modal').addEventListener('click', function(e) {
+                if (e.target.id === 'modal') closeModal();
+            });
+            document.getElementById('itemForm').addEventListener('submit', handleSubmit);
+            document.getElementById('addPersonBtn').addEventListener('click', addPerson);
+            document.getElementById('personInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addPerson();
+                }
+            });
+            document.getElementById('personFilter').addEventListener('change', function(e) {
+                filteredPerson = e.target.value;
+                renderItems();
+            });
+            document.getElementById('hideCompletedBtn').addEventListener('click', toggleHideCompleted);
+
+            // Sub-initiative modal
+            document.getElementById('subCancelBtn').addEventListener('click', closeSubModal);
+            document.getElementById('subModal').addEventListener('click', function(e) {
+                if (e.target.id === 'subModal') closeSubModal();
+            });
+            document.getElementById('subItemForm').addEventListener('submit', handleSubSubmit);
+        }
+
+        function toggleHideCompleted() {
+            hideCompleted = !hideCompleted;
+            const btn = document.getElementById('hideCompletedBtn');
+            btn.textContent = hideCompleted ? 'Show Completed' : 'Hide Completed';
+            renderItems();
+        }
+
+        // ============================================
+        // DATABASE FUNCTIONS (CRUD Operations)
+        // ============================================
+
+        async function loadItems() {
+            if (db) {
+                // Load from Firebase
+                try {
+                    const snapshot = await db.ref('initiatives').once('value');
+                    const data = snapshot.val();
+                    items = data ? Object.values(data) : [];
+                    items.sort((a, b) => new Date(a.date) - new Date(b.date));
+                    renderItems();
+                    updatePersonFilter();
+                } catch (error) {
+                    console.error('Error loading from Firebase:', error);
+                    loadFromLocalStorage();
+                }
+            } else {
+                // Load from localStorage
+                loadFromLocalStorage();
+            }
+        }
+
+        function loadFromLocalStorage() {
+            try {
+                const stored = localStorage.getItem('ministryRoadmap');
+                if (stored) {
+                    items = JSON.parse(stored);
+                    items.sort((a, b) => new Date(a.date) - new Date(b.date));
+                }
+            } catch (error) {
+                console.error('Error loading items:', error);
+                items = [];
+            }
+            renderItems();
+            updatePersonFilter();
+        }
+
+        async function saveItems() {
+            if (db) {
+                // Save to Firebase
+                try {
+                    const itemsObject = {};
+                    items.forEach(item => {
+                        itemsObject[item.id] = item;
+                    });
+                    await db.ref('initiatives').set(itemsObject);
+                    console.log('✅ Saved to Firebase');
+                } catch (error) {
+                    console.error('Error saving to Firebase:', error);
+                    alert('Error saving to database. Changes saved locally.');
+                    saveToLocalStorage();
+                }
+            } else {
+                // Save to localStorage
+                saveToLocalStorage();
+            }
+        }
+
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem('ministryRoadmap', JSON.stringify(items));
+            } catch (error) {
+                console.error('Error saving items:', error);
+                alert('Error saving items. Please try again.');
+            }
+        }
+
+        async function deleteItemFromDB(id) {
+            if (db) {
+                try {
+                    await db.ref('initiatives/' + id).remove();
+                    console.log('✅ Deleted from Firebase');
+                } catch (error) {
+                    console.error('Error deleting from Firebase:', error);
+                }
+            }
+        }
+
+        // ============================================
+        // UI FUNCTIONS
+        // ============================================
+
+        function initializeMinistryFilters() {
+            const container = document.getElementById('ministryFilters');
+            
+            const allBtn = document.createElement('button');
+            allBtn.className = 'filter-btn active';
+            allBtn.textContent = 'All Ministries';
+            allBtn.addEventListener('click', () => {
+                filteredMinistry = 'All';
+                updateFilterButtons();
+                renderItems();
+            });
+            container.appendChild(allBtn);
+
+            MINISTRIES.forEach(ministry => {
+                const btn = document.createElement('button');
+                btn.className = 'filter-btn';
+                btn.textContent = ministry;
+                btn.addEventListener('click', () => {
+                    filteredMinistry = ministry;
+                    updateFilterButtons();
+                    renderItems();
+                });
+                container.appendChild(btn);
+            });
+        }
+
+        function updateFilterButtons() {
+            const buttons = document.querySelectorAll('#ministryFilters .filter-btn');
+            buttons.forEach(btn => {
+                if ((filteredMinistry === 'All' && btn.textContent === 'All Ministries') ||
+                    btn.textContent === filteredMinistry) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        function initializeMinistrySelect() {
+            const select = document.getElementById('ministryInput');
+            MINISTRIES.forEach(ministry => {
+                const option = document.createElement('option');
+                option.value = ministry;
+                option.textContent = ministry;
+                select.appendChild(option);
+            });
+        }
+
+        function updatePersonFilter() {
+            const people = new Set();
+            items.forEach(item => {
+                if (item.taggedPeople) {
+                    item.taggedPeople.forEach(person => people.add(person));
+                }
+            });
+
+            const select = document.getElementById('personFilter');
+            const container = document.getElementById('personFilterContainer');
+            
+            if (people.size > 0) {
+                select.innerHTML = '<option value="All">All People</option>';
+                Array.from(people).sort().forEach(person => {
+                    const option = document.createElement('option');
+                    option.value = person;
+                    option.textContent = person;
+                    select.appendChild(option);
+                });
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+            }
+        }
+
+        function renderItems() {
+            const container = document.getElementById('timelineItems');
+            
+            let filteredItems = items;
+            if (filteredMinistry !== 'All') {
+                filteredItems = filteredItems.filter(item => item.ministry === filteredMinistry);
+            }
+            if (filteredPerson !== 'All') {
+                filteredItems = filteredItems.filter(item => 
+                    item.taggedPeople && item.taggedPeople.includes(filteredPerson)
+                );
+            }
+            if (hideCompleted) {
+                filteredItems = filteredItems.filter(item => item.status !== 'Completed');
+            }
+
+            if (filteredItems.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <p>No initiatives to display.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            filteredItems.forEach((item, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'timeline-item';
+                itemDiv.style.animationDelay = `${index * 0.1}s`;
+
+                const ministryClass = item.ministry.toLowerCase().replace(/\s+/g, '');
+                const statusClass = item.status.toLowerCase().replace(' ', '-');
+                
+                const date = new Date(item.date);
+                const formattedDate = date.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+
+                let taggedPeopleHtml = '';
+                if (item.taggedPeople && item.taggedPeople.length > 0) {
+                    taggedPeopleHtml = '<div class="tagged-people">';
+                    item.taggedPeople.forEach(person => {
+                        taggedPeopleHtml += `<span class="person-tag">${person}</span>`;
+                    });
+                    taggedPeopleHtml += '</div>';
+                }
+
+                let subInitiativesHtml = '';
+                if (item.subInitiatives && item.subInitiatives.length > 0) {
+                    subInitiativesHtml = `
+                        <div class="sub-initiatives">
+                            <div class="sub-initiatives-header">
+                                <span class="sub-initiatives-title">Sub-Initiatives (${item.subInitiatives.length})</span>
+                                <button class="add-sub-btn" onclick="openSubModal('${item.id}')">+ Add Sub</button>
+                            </div>
+                    `;
+                    item.subInitiatives.forEach(sub => {
+                        subInitiativesHtml += `
+                            <div class="sub-initiative-item">
+                                <div class="sub-initiative-content">
+                                    <div class="sub-initiative-title">${sub.title}</div>
+                                    ${sub.description ? `<div class="sub-initiative-desc">${sub.description}</div>` : ''}
+                                </div>
+                                <div class="sub-initiative-actions">
+                                    <button class="sub-action-btn" onclick="editSubInitiative('${item.id}', '${sub.id}')">Edit</button>
+                                    <button class="sub-action-btn delete" onclick="deleteSubInitiative('${item.id}', '${sub.id}')">Delete</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    subInitiativesHtml += '</div>';
+                } else {
+                    subInitiativesHtml = `
+                        <div class="sub-initiatives">
+                            <div class="sub-initiatives-header">
+                                <span class="sub-initiatives-title">Sub-Initiatives (0)</span>
+                                <button class="add-sub-btn" onclick="openSubModal('${item.id}')">+ Add Sub</button>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                itemDiv.innerHTML = `
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <span class="ministry-tag ${ministryClass}">${item.ministry}</span>
+                        <h3 class="item-title">${item.title}</h3>
+                        <div class="item-date">${formattedDate}</div>
+                        <p class="item-description">${item.description}</p>
+                        ${taggedPeopleHtml}
+                        <span class="item-status ${statusClass}">${item.status}</span>
+                        ${subInitiativesHtml}
+                        <div class="item-actions">
+                            <button class="action-btn" onclick="editItem('${item.id}')">Edit</button>
+                            <button class="action-btn delete" onclick="deleteItem('${item.id}')">Delete</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(itemDiv);
+            });
+        }
+
+        // ============================================
+        // MAIN INITIATIVE MODAL FUNCTIONS
+        // ============================================
+
+        function openModal(itemId = null) {
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modalTitle');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            if (itemId) {
+                const item = items.find(i => i.id === itemId);
+                if (item) {
+                    editingId = itemId;
+                    modalTitle.textContent = 'Edit Initiative';
+                    submitBtn.textContent = 'Update';
+                    
+                    document.getElementById('titleInput').value = item.title;
+                    document.getElementById('ministryInput').value = item.ministry;
+                    document.getElementById('dateInput').value = item.date;
+                    document.getElementById('descriptionInput').value = item.description;
+                    document.getElementById('statusInput').value = item.status;
+                    taggedPeople = item.taggedPeople ? [...item.taggedPeople] : [];
+                    renderTaggedPeople();
+                }
+            } else {
+                editingId = null;
+                modalTitle.textContent = 'New Initiative';
+                submitBtn.textContent = 'Create';
+                document.getElementById('itemForm').reset();
+                document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
+                taggedPeople = [];
+                renderTaggedPeople();
+            }
+            
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+            editingId = null;
+            taggedPeople = [];
+        }
+
+        async function handleSubmit(e) {
+            e.preventDefault();
+            
+            const newItem = {
+                id: editingId || Date.now().toString(),
+                title: document.getElementById('titleInput').value,
+                ministry: document.getElementById('ministryInput').value,
+                date: document.getElementById('dateInput').value,
+                description: document.getElementById('descriptionInput').value,
+                status: document.getElementById('statusInput').value,
+                taggedPeople: [...taggedPeople],
+                subInitiatives: editingId ? (items.find(i => i.id === editingId)?.subInitiatives || []) : []
+            };
+
+            if (editingId) {
+                const index = items.findIndex(i => i.id === editingId);
+                if (index !== -1) {
+                    items[index] = newItem;
+                }
+            } else {
+                items.push(newItem);
+            }
+
+            items.sort((a, b) => new Date(a.date) - new Date(b.date));
+            await saveItems();
+            renderItems();
+            updatePersonFilter();
+            closeModal();
+        }
+
+        function addPerson() {
+            const input = document.getElementById('personInput');
+            const name = input.value.trim();
+            
+            if (name && !taggedPeople.includes(name)) {
+                taggedPeople.push(name);
+                renderTaggedPeople();
+                input.value = '';
+            }
+        }
+
+        function removePerson(person) {
+            taggedPeople = taggedPeople.filter(p => p !== person);
+            renderTaggedPeople();
+        }
+
+        function renderTaggedPeople() {
+            const container = document.getElementById('taggedList');
+            if (taggedPeople.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            container.innerHTML = '';
+            taggedPeople.forEach(person => {
+                const div = document.createElement('div');
+                div.className = 'tagged-item';
+                div.innerHTML = `
+                    <span>${person}</span>
+                    <button type="button" onclick="removePerson('${person}')">×</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function editItem(id) {
+            openModal(id);
+        }
+
+        async function deleteItem(id) {
+            if (confirm('Are you sure you want to delete this initiative? This will also delete all sub-initiatives.')) {
+                items = items.filter(item => item.id !== id);
+                await deleteItemFromDB(id);
+                await saveItems();
+                renderItems();
+                updatePersonFilter();
+            }
+        }
+
+        // ============================================
+        // SUB-INITIATIVE FUNCTIONS
+        // ============================================
+
+        function openSubModal(parentId, subId = null) {
+            currentParentId = parentId;
+            const modal = document.getElementById('subModal');
+            const modalTitle = document.getElementById('subModalTitle');
+            const submitBtn = document.getElementById('subSubmitBtn');
+            
+            if (subId) {
+                editingSubId = subId;
+                const parent = items.find(i => i.id === parentId);
+                const sub = parent?.subInitiatives?.find(s => s.id === subId);
+                
+                if (sub) {
+                    modalTitle.textContent = 'Edit Sub-Initiative';
+                    submitBtn.textContent = 'Update';
+                    document.getElementById('subTitleInput').value = sub.title;
+                    document.getElementById('subDescriptionInput').value = sub.description || '';
+                }
+            } else {
+                editingSubId = null;
+                modalTitle.textContent = 'New Sub-Initiative';
+                submitBtn.textContent = 'Create';
+                document.getElementById('subItemForm').reset();
+            }
+            
+            modal.classList.remove('hidden');
+        }
+
+        function closeSubModal() {
+            document.getElementById('subModal').classList.add('hidden');
+            currentParentId = null;
+            editingSubId = null;
+        }
+
+        async function handleSubSubmit(e) {
+            e.preventDefault();
+            
+            const parentIndex = items.findIndex(i => i.id === currentParentId);
+            if (parentIndex === -1) return;
+
+            if (!items[parentIndex].subInitiatives) {
+                items[parentIndex].subInitiatives = [];
+            }
+
+            const subItem = {
+                id: editingSubId || Date.now().toString(),
+                title: document.getElementById('subTitleInput').value,
+                description: document.getElementById('subDescriptionInput').value
+            };
+
+            if (editingSubId) {
+                const subIndex = items[parentIndex].subInitiatives.findIndex(s => s.id === editingSubId);
+                if (subIndex !== -1) {
+                    items[parentIndex].subInitiatives[subIndex] = subItem;
+                }
+            } else {
+                items[parentIndex].subInitiatives.push(subItem);
+            }
+
+            await saveItems();
+            renderItems();
+            closeSubModal();
+        }
+
+        function editSubInitiative(parentId, subId) {
+            openSubModal(parentId, subId);
+        }
+
+        async function deleteSubInitiative(parentId, subId) {
+            if (confirm('Are you sure you want to delete this sub-initiative?')) {
+                const parentIndex = items.findIndex(i => i.id === parentId);
+                if (parentIndex !== -1 && items[parentIndex].subInitiatives) {
+                    items[parentIndex].subInitiatives = items[parentIndex].subInitiatives.filter(s => s.id !== subId);
+                    await saveItems();
+                    renderItems();
+                }
+            }
+        }
+    </script>
+</body>
+</html>
