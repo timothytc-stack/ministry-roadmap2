@@ -14,6 +14,8 @@
             --slate-blue: #5B6B7C;
             --light-sage: #E8EBE4;
             --accent-burgundy: #8B4754;
+            --urgent-red: #D32F2F;
+            --important-orange: #F57C00;
         }
 
         * {
@@ -206,6 +208,24 @@
             border-color: var(--deep-olive);
         }
 
+        .filter-btn.urgent {
+            border-color: var(--urgent-red);
+        }
+
+        .filter-btn.urgent.active {
+            background: var(--urgent-red);
+            border-color: var(--urgent-red);
+        }
+
+        .filter-btn.important {
+            border-color: var(--important-orange);
+        }
+
+        .filter-btn.important.active {
+            background: var(--important-orange);
+            border-color: var(--important-orange);
+        }
+
         .person-filter {
             margin-top: 1rem;
         }
@@ -310,6 +330,14 @@
             transition: all 0.3s ease;
         }
 
+        .timeline-content.urgent {
+            border-left: 4px solid var(--urgent-red);
+        }
+
+        .timeline-content.important {
+            border-left: 4px solid var(--important-orange);
+        }
+
         .timeline-item:nth-child(odd) .timeline-content {
             margin-right: 4rem;
         }
@@ -335,6 +363,45 @@
             border: 4px solid var(--deep-olive);
             box-shadow: 0 0 0 4px var(--light-sage);
             z-index: 2;
+        }
+
+        .timeline-marker.urgent {
+            border-color: var(--urgent-red);
+            box-shadow: 0 0 0 4px rgba(211, 47, 47, 0.2);
+        }
+
+        .timeline-marker.important {
+            border-color: var(--important-orange);
+            box-shadow: 0 0 0 4px rgba(245, 124, 0, 0.2);
+        }
+
+        .priority-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.3rem 0.8rem;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+            margin-right: 0.5rem;
+        }
+
+        .priority-badge.urgent {
+            background: rgba(211, 47, 47, 0.15);
+            color: var(--urgent-red);
+        }
+
+        .priority-badge.important {
+            background: rgba(245, 124, 0, 0.15);
+            color: var(--important-orange);
+        }
+
+        .priority-badge::before {
+            content: '⚠';
+            margin-right: 0.3rem;
+            font-size: 1rem;
         }
 
         .ministry-tag {
@@ -604,6 +671,7 @@
         }
 
         input[type="text"],
+        input[type="email"],
         input[type="date"],
         textarea,
         select {
@@ -617,6 +685,7 @@
         }
 
         input[type="text"]:focus,
+        input[type="email"]:focus,
         input[type="date"]:focus,
         textarea:focus,
         select:focus {
@@ -627,6 +696,26 @@
         textarea {
             resize: vertical;
             min-height: 100px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-weight: 400;
+        }
+
+        input[type="checkbox"] {
+            width: 1.2rem;
+            height: 1.2rem;
+            cursor: pointer;
         }
 
         .tag-input-container {
@@ -735,6 +824,20 @@
             display: none;
         }
 
+        .info-box {
+            background: rgba(212, 165, 116, 0.1);
+            border-left: 4px solid var(--warm-gold);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--slate-blue);
+        }
+
+        .info-box strong {
+            color: var(--deep-olive);
+        }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 2.5rem;
@@ -801,6 +904,15 @@
                 <span class="filter-label">Filter by Ministry:</span>
                 <div class="filter-group" id="ministryFilters"></div>
                 
+                <div style="margin-top: 1rem;">
+                    <span class="filter-label">Filter by Priority:</span>
+                    <div class="filter-group">
+                        <button class="filter-btn" id="filterAll">All</button>
+                        <button class="filter-btn urgent" id="filterUrgent">🔴 Urgent</button>
+                        <button class="filter-btn important" id="filterImportant">🟠 Important</button>
+                    </div>
+                </div>
+                
                 <div class="person-filter hidden" id="personFilterContainer">
                     <span class="filter-label">Filter by Person:</span>
                     <select class="person-select" id="personFilter">
@@ -861,9 +973,27 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Tag People</label>
+                    <label>Priority</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="urgentCheckbox">
+                            <span>🔴 Urgent</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="importantCheckbox">
+                            <span>🟠 Important</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Tag People (with emails for reminders)</label>
+                    <div class="info-box">
+                        <strong>Email Reminders:</strong> People tagged with emails will receive automatic reminders 1 month and 2 weeks before the target date.
+                    </div>
                     <div class="tag-input-container">
-                        <input type="text" id="personInput" placeholder="Enter a name...">
+                        <input type="text" id="personNameInput" placeholder="Name">
+                        <input type="email" id="personEmailInput" placeholder="Email (optional)">
                         <button type="button" id="addPersonBtn">Add</button>
                     </div>
                     <div class="tagged-list" id="taggedList"></div>
@@ -903,16 +1033,20 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
     <script>
         // ============================================
         // 🔐 PASSWORD CONFIGURATION
         // ============================================
-        // TO CHANGE PASSWORD: Simply replace 'ministry2024' below with your new password
         const CORRECT_PASSWORD = 'ministry2024';
         // ============================================
 
         // ============================================
+        // 🔥 FIREBASE CONFIGURATION
+        //============================================
         // 🔥 FIREBASE CONFIGURATION
         // ============================================
         // REPLACE THESE VALUES WITH YOUR FIREBASE PROJECT CREDENTIALS
@@ -928,6 +1062,17 @@
         };
         // ============================================
 
+        // ============================================
+
+        // ============================================
+        // 📧 EMAILJS CONFIGURATION
+        // ============================================
+        // Follow the EMAIL-SETUP-GUIDE.md to get these values
+        const EMAILJS_PUBLIC_KEY = "YOUR_EMAILJS_PUBLIC_KEY";
+        const EMAILJS_SERVICE_ID = "YOUR_EMAILJS_SERVICE_ID";
+        const EMAILJS_TEMPLATE_ID = "YOUR_EMAILJS_TEMPLATE_ID";
+        // ============================================
+
         const MINISTRIES = [
             'Worship', 'Gen A', 'Evangelism', 'Children', 'Admin',
             'Amplify', 'Prayer', 'Welcome', 'Missions', 'Finance',
@@ -938,6 +1083,7 @@
         let items = [];
         let filteredMinistry = 'All';
         let filteredPerson = 'All';
+        let filteredPriority = 'All';
         let hideCompleted = false;
         let editingId = null;
         let taggedPeople = [];
@@ -946,6 +1092,7 @@
 
         // Check if Firebase is configured
         const isFirebaseConfigured = firebaseConfig.apiKey !== "YOUR_API_KEY_HERE";
+        const isEmailJSConfigured = EMAILJS_PUBLIC_KEY !== "YOUR_EMAILJS_PUBLIC_KEY";
 
         // Initialize Firebase if configured
         if (isFirebaseConfigured) {
@@ -957,7 +1104,19 @@
                 console.error('❌ Firebase initialization error:', error);
             }
         } else {
-            console.warn('⚠️ Firebase not configured. Using localStorage. See instructions to set up database.');
+            console.warn('⚠️ Firebase not configured. Using localStorage.');
+        }
+
+        // Initialize EmailJS if configured
+        if (isEmailJSConfigured) {
+            try {
+                emailjs.init(EMAILJS_PUBLIC_KEY);
+                console.log('✅ EmailJS initialized successfully');
+            } catch (error) {
+                console.error('❌ EmailJS initialization error:', error);
+            }
+        } else {
+            console.warn('⚠️ EmailJS not configured. Email reminders disabled. See EMAIL-SETUP-GUIDE.md');
         }
 
         // Password handling
@@ -995,6 +1154,8 @@
             loadItems();
             initializeMinistryFilters();
             initializeMinistrySelect();
+            initializePriorityFilters();
+            checkAndSendReminders(); // Check for reminders on load
             
             document.getElementById('addBtn').addEventListener('click', () => openModal());
             document.getElementById('cancelBtn').addEventListener('click', closeModal);
@@ -1003,12 +1164,6 @@
             });
             document.getElementById('itemForm').addEventListener('submit', handleSubmit);
             document.getElementById('addPersonBtn').addEventListener('click', addPerson);
-            document.getElementById('personInput').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    addPerson();
-                }
-            });
             document.getElementById('personFilter').addEventListener('change', function(e) {
                 filteredPerson = e.target.value;
                 renderItems();
@@ -1021,6 +1176,37 @@
                 if (e.target.id === 'subModal') closeSubModal();
             });
             document.getElementById('subItemForm').addEventListener('submit', handleSubSubmit);
+
+            // Check for reminders daily
+            setInterval(checkAndSendReminders, 24 * 60 * 60 * 1000); // Once per day
+        }
+
+        function initializePriorityFilters() {
+            document.getElementById('filterAll').addEventListener('click', () => {
+                filteredPriority = 'All';
+                updatePriorityFilterButtons();
+                renderItems();
+            });
+
+            document.getElementById('filterUrgent').addEventListener('click', () => {
+                filteredPriority = 'Urgent';
+                updatePriorityFilterButtons();
+                renderItems();
+            });
+
+            document.getElementById('filterImportant').addEventListener('click', () => {
+                filteredPriority = 'Important';
+                updatePriorityFilterButtons();
+                renderItems();
+            });
+
+            updatePriorityFilterButtons();
+        }
+
+        function updatePriorityFilterButtons() {
+            document.getElementById('filterAll').classList.toggle('active', filteredPriority === 'All');
+            document.getElementById('filterUrgent').classList.toggle('active', filteredPriority === 'Urgent');
+            document.getElementById('filterImportant').classList.toggle('active', filteredPriority === 'Important');
         }
 
         function toggleHideCompleted() {
@@ -1031,12 +1217,89 @@
         }
 
         // ============================================
+        // EMAIL REMINDER FUNCTIONS
+        // ============================================
+
+        async function checkAndSendReminders() {
+            if (!isEmailJSConfigured) {
+                console.log('⚠️ Email reminders disabled - EmailJS not configured');
+                return;
+            }
+
+            const today = new Date();
+            const remindersToSend = [];
+
+            items.forEach(item => {
+                if (item.status === 'Completed' || !item.date) return;
+
+                const targetDate = new Date(item.date);
+                const daysUntilTarget = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
+
+                // Check if we need to send reminders (30 days or 14 days before)
+                if (daysUntilTarget === 30 || daysUntilTarget === 14) {
+                    if (item.taggedPeople && item.taggedPeople.length > 0) {
+                        item.taggedPeople.forEach(person => {
+                            if (person.email) {
+                                remindersToSend.push({
+                                    name: person.name,
+                                    email: person.email,
+                                    initiativeTitle: item.title,
+                                    daysUntil: daysUntilTarget,
+                                    targetDate: targetDate.toLocaleDateString('en-US', { 
+                                        year: 'numeric', 
+                                        month: 'long', 
+                                        day: 'numeric' 
+                                    }),
+                                    description: item.description,
+                                    ministry: item.ministry
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+
+            // Send all reminders
+            for (const reminder of remindersToSend) {
+                await sendReminderEmail(reminder);
+            }
+
+            if (remindersToSend.length > 0) {
+                console.log(`✅ Sent ${remindersToSend.length} reminder emails`);
+            }
+        }
+
+        async function sendReminderEmail(reminder) {
+            try {
+                const templateParams = {
+                    to_name: reminder.name,
+                    to_email: reminder.email,
+                    initiative_title: reminder.initiativeTitle,
+                    days_until: reminder.daysUntil,
+                    target_date: reminder.targetDate,
+                    description: reminder.description,
+                    ministry: reminder.ministry,
+                    from_name: "Ministry Roadmap"
+                };
+
+                await emailjs.send(
+                    EMAILJS_SERVICE_ID,
+                    EMAILJS_TEMPLATE_ID,
+                    templateParams
+                );
+
+                console.log(`✅ Reminder sent to ${reminder.email}`);
+            } catch (error) {
+                console.error('❌ Error sending reminder email:', error);
+            }
+        }
+
+        // ============================================
         // DATABASE FUNCTIONS (CRUD Operations)
         // ============================================
 
         async function loadItems() {
             if (db) {
-                // Load from Firebase
                 try {
                     const snapshot = await db.ref('initiatives').once('value');
                     const data = snapshot.val();
@@ -1049,7 +1312,6 @@
                     loadFromLocalStorage();
                 }
             } else {
-                // Load from localStorage
                 loadFromLocalStorage();
             }
         }
@@ -1071,7 +1333,6 @@
 
         async function saveItems() {
             if (db) {
-                // Save to Firebase
                 try {
                     const itemsObject = {};
                     items.forEach(item => {
@@ -1085,7 +1346,6 @@
                     saveToLocalStorage();
                 }
             } else {
-                // Save to localStorage
                 saveToLocalStorage();
             }
         }
@@ -1166,7 +1426,7 @@
             const people = new Set();
             items.forEach(item => {
                 if (item.taggedPeople) {
-                    item.taggedPeople.forEach(person => people.add(person));
+                    item.taggedPeople.forEach(person => people.add(person.name));
                 }
             });
 
@@ -1191,14 +1451,25 @@
             const container = document.getElementById('timelineItems');
             
             let filteredItems = items;
+            
             if (filteredMinistry !== 'All') {
                 filteredItems = filteredItems.filter(item => item.ministry === filteredMinistry);
             }
+            
             if (filteredPerson !== 'All') {
                 filteredItems = filteredItems.filter(item => 
-                    item.taggedPeople && item.taggedPeople.includes(filteredPerson)
+                    item.taggedPeople && item.taggedPeople.some(p => p.name === filteredPerson)
                 );
             }
+            
+            if (filteredPriority !== 'All') {
+                if (filteredPriority === 'Urgent') {
+                    filteredItems = filteredItems.filter(item => item.isUrgent);
+                } else if (filteredPriority === 'Important') {
+                    filteredItems = filteredItems.filter(item => item.isImportant);
+                }
+            }
+            
             if (hideCompleted) {
                 filteredItems = filteredItems.filter(item => item.status !== 'Completed');
             }
@@ -1229,11 +1500,26 @@
                     day: 'numeric' 
                 });
 
+                let priorityClass = '';
+                let priorityMarker = '';
+                let priorityBadges = '';
+
+                if (item.isUrgent) {
+                    priorityClass = 'urgent';
+                    priorityMarker = 'urgent';
+                    priorityBadges += '<span class="priority-badge urgent">Urgent</span>';
+                }
+                if (item.isImportant) {
+                    if (!priorityClass) priorityClass = 'important';
+                    if (!priorityMarker) priorityMarker = 'important';
+                    priorityBadges += '<span class="priority-badge important">Important</span>';
+                }
+
                 let taggedPeopleHtml = '';
                 if (item.taggedPeople && item.taggedPeople.length > 0) {
                     taggedPeopleHtml = '<div class="tagged-people">';
                     item.taggedPeople.forEach(person => {
-                        taggedPeopleHtml += `<span class="person-tag">${person}</span>`;
+                        taggedPeopleHtml += `<span class="person-tag">${person.name}</span>`;
                     });
                     taggedPeopleHtml += '</div>';
                 }
@@ -1274,8 +1560,9 @@
                 }
 
                 itemDiv.innerHTML = `
-                    <div class="timeline-marker"></div>
-                    <div class="timeline-content">
+                    <div class="timeline-marker ${priorityMarker}"></div>
+                    <div class="timeline-content ${priorityClass}">
+                        ${priorityBadges}
                         <span class="ministry-tag ${ministryClass}">${item.ministry}</span>
                         <h3 class="item-title">${item.title}</h3>
                         <div class="item-date">${formattedDate}</div>
@@ -1314,6 +1601,8 @@
                     document.getElementById('dateInput').value = item.date;
                     document.getElementById('descriptionInput').value = item.description;
                     document.getElementById('statusInput').value = item.status;
+                    document.getElementById('urgentCheckbox').checked = item.isUrgent || false;
+                    document.getElementById('importantCheckbox').checked = item.isImportant || false;
                     taggedPeople = item.taggedPeople ? [...item.taggedPeople] : [];
                     renderTaggedPeople();
                 }
@@ -1346,6 +1635,8 @@
                 date: document.getElementById('dateInput').value,
                 description: document.getElementById('descriptionInput').value,
                 status: document.getElementById('statusInput').value,
+                isUrgent: document.getElementById('urgentCheckbox').checked,
+                isImportant: document.getElementById('importantCheckbox').checked,
                 taggedPeople: [...taggedPeople],
                 subInitiatives: editingId ? (items.find(i => i.id === editingId)?.subInitiatives || []) : []
             };
@@ -1367,18 +1658,24 @@
         }
 
         function addPerson() {
-            const input = document.getElementById('personInput');
-            const name = input.value.trim();
+            const nameInput = document.getElementById('personNameInput');
+            const emailInput = document.getElementById('personEmailInput');
+            const name = nameInput.value.trim();
+            const email = emailInput.value.trim();
             
-            if (name && !taggedPeople.includes(name)) {
-                taggedPeople.push(name);
+            if (name && !taggedPeople.some(p => p.name === name)) {
+                taggedPeople.push({
+                    name: name,
+                    email: email || null
+                });
                 renderTaggedPeople();
-                input.value = '';
+                nameInput.value = '';
+                emailInput.value = '';
             }
         }
 
-        function removePerson(person) {
-            taggedPeople = taggedPeople.filter(p => p !== person);
+        function removePerson(personName) {
+            taggedPeople = taggedPeople.filter(p => p.name !== personName);
             renderTaggedPeople();
         }
 
@@ -1393,9 +1690,10 @@
             taggedPeople.forEach(person => {
                 const div = document.createElement('div');
                 div.className = 'tagged-item';
+                const emailIndicator = person.email ? ' 📧' : '';
                 div.innerHTML = `
-                    <span>${person}</span>
-                    <button type="button" onclick="removePerson('${person}')">×</button>
+                    <span>${person.name}${emailIndicator}</span>
+                    <button type="button" onclick="removePerson('${person.name}')">×</button>
                 `;
                 container.appendChild(div);
             });
